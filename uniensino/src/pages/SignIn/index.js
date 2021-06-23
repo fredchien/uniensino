@@ -67,6 +67,7 @@ export default class SignIn extends React.Component {
           // alert(response.data.success);
           if (response.data.success) {
             await AsyncStorage.setItem('key', response.data.data.token);
+            await AsyncStorage.setItem('user', JSON.stringify(response.data.data.user.id));
             this.props.navigation.replace('About');
           } else {
             await AsyncStorage.removeItem('key');

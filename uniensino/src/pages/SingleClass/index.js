@@ -47,12 +47,12 @@ export default class SingleClass extends React.Component {
       <>
 
         <ScrollView style={{ backgroundColor: '#fff' }}>
-          <Spinner
+          {/* <Spinner
             visible={loading}
             textContent={'Carregando...'}
             textStyle={{ color: '#fff' }}
             overlayColor={'#002951'}
-          />
+          /> */}
           <Container>
             <Video source={{ uri: "https://player.vimeo.com/video/361563749" }}   // Can be a URL or a local file.
               ref={(ref) => {

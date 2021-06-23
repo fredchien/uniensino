@@ -1,5 +1,7 @@
-import React, {Component} from 'react';
-import {View, StyleSheet, Text, TouchableOpacity} from 'react-native';
+import React, { Component } from 'react';
+import { View, StyleSheet, Text, TouchableOpacity } from 'react-native';
+import AsyncStorage from '@react-native-community/async-storage';
+import api from '../../services/api';
 
 import Icon from 'react-native-vector-icons/FontAwesome';
 
@@ -13,10 +15,31 @@ export default class Student extends React.Component {
   state = {
     data: [],
     loading: true,
-    success: false
+    success: false,
+    user: []
   };
   componentDidMount() {
-    this.setState({ loading: false});
+    this.getLoad();
+  }
+
+  getLoad = async () => {
+    AsyncStorage.getItem('key').then((token) => {
+      if (token !== null) {
+        this.setState({ token: token })
+        this.getUser(token)
+      }
+    });
+  }
+
+  getUser = async (token = this.state.token) => {
+    this.setState({ loading: true });
+    const response = await api.get(`/users`,
+      { headers: { Authorization: 'Bearer ' + token } },
+    );
+
+    this.setState({ user: response.data.data.user, loading: false });
+
+
   }
 
   myChangeHandler = (event) => {
@@ -35,30 +58,30 @@ export default class Student extends React.Component {
   }
 
 
-  render(){
-    const {loading} = this.state;
-    return(
+  render() {
+    const { loading, user } = this.state;
+    return (
 
       <Container>
         <Spinner
           visible={loading}
           textContent={'Carregando...'}
-          textStyle={{color: '#fff'}}
+          textStyle={{ color: '#fff' }}
           overlayColor={'#002951'}
         />
         <BoxUser>
-          <View style={{backgroundColor: '#EEEEEE', width: 76, height: 76, display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: 100}}>
+          <View style={{ backgroundColor: '#EEEEEE', width: 76, height: 76, display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: 100 }}>
             <Icon
               name="user"
               color={'#002951'}
               size={40}
             />
           </View>
-          <Text style={{marginTop: 15, fontSize: 18}}>Cléber Alexandre</Text>
+          <Text style={{ marginTop: 15, fontSize: 18 }}>{user.name}</Text>
         </BoxUser>
         <Form>
           <BoxInput>
-            <View style={{flexDirection: 'row'}}>
+            <View style={{ flexDirection: 'row' }}>
               <LabelInput>E-mail</LabelInput>
             </View>
             <FormInput
@@ -67,10 +90,11 @@ export default class Student extends React.Component {
               autoCapitalize="none"
               onChange={this.myChangeHandler}
               name={'email'}
+              value={user.number}
             />
           </BoxInput>
           <BoxInput>
-            <View style={{flexDirection: 'row'}}>
+            <View style={{ flexDirection: 'row' }}>
               <LabelInput>Telefone</LabelInput>
             </View>
             <TextInputMask
@@ -81,10 +105,10 @@ export default class Student extends React.Component {
                 dddMask: '(41) '
               }}
               style={styles.textInputStype}
-              value={this.state.data.telefone}
+              value={user.phone}
               onChangeText={text => {
                 this.setState({
-                  data:{
+                  data: {
                     ...this.state.data,
                     telefone: text
                   }
@@ -93,7 +117,7 @@ export default class Student extends React.Component {
             />
           </BoxInput>
           <BoxInput>
-            <View style={{flexDirection: 'row'}}>
+            <View style={{ flexDirection: 'row' }}>
               <LabelInput>Nova Senha</LabelInput>
             </View>
             <FormInput
@@ -104,7 +128,7 @@ export default class Student extends React.Component {
             />
           </BoxInput>
           <BoxInput>
-            <View style={{flexDirection: 'row'}}>
+            <View style={{ flexDirection: 'row' }}>
               <LabelInput>Confirme sua Senha</LabelInput>
             </View>
             <FormInput
@@ -115,12 +139,12 @@ export default class Student extends React.Component {
             />
           </BoxInput>
           <SubmitButton onPress={this.handleSubmit}>
-            <Text style={{fontFamily: 'Montserrat'}}>Salvar</Text>
+            <Text style={{ fontFamily: 'Montserrat' }}>Salvar</Text>
           </SubmitButton>
         </Form>
       </Container>
 
-  );
+    );
   }
 }
 
