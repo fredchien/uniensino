@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, StyleSheet, Text, TouchableOpacity } from 'react-native';
+import { View, StyleSheet, Text, TouchableOpacity, ActivityIndicator, TextInput } from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage';
 import api from '../../services/api';
 
@@ -16,6 +16,8 @@ export default class Student extends React.Component {
     data: [],
     loading: true,
     success: false,
+    button: true,
+    token: '',
     user: []
   };
   componentDidMount() {
@@ -42,7 +44,7 @@ export default class Student extends React.Component {
 
   }
 
-  myChangeHandler = (event) => {
+  myChangeHandler = event => {
     let nam = event._dispatchInstances.memoizedProps.name;
     let val = event.nativeEvent.text;
     this.setState({
@@ -54,7 +56,26 @@ export default class Student extends React.Component {
   };
 
   handleSubmit = async (event) => {
-    console.log(this.state.data);
+    this.setState({ button: false });
+    console.log('entrou');
+    let data = this.state.data;
+    console.log(data);
+    await api.post('/users', {
+      "name": "Rogério do Ingá",
+      "phone": "(41) 98888-7777",
+      "home_phone": "(41) 3555-7777",
+      "password": "1234",
+      "password_confirm": "1234"
+    },
+      { headers: { Authorization: 'Bearer ' + this.state.token } })
+      .then(response => {
+        console.log(response.data);
+        this.setState({ button: true });
+      })
+      .catch(err => {
+        console.log(err.data);
+        this.setState({ button: false, error: true, msgError: "O e-mail ou senha informados não são válidos!" })
+      });
   }
 
 
@@ -82,39 +103,14 @@ export default class Student extends React.Component {
         <Form>
           <BoxInput>
             <View style={{ flexDirection: 'row' }}>
-              <LabelInput>E-mail</LabelInput>
-            </View>
-            <FormInput
-              keyboardType="email-address"
-              autoCorrect={false}
-              autoCapitalize="none"
-              onChange={this.myChangeHandler}
-              name={'email'}
-              value={user.number}
-            />
-          </BoxInput>
-          <BoxInput>
-            <View style={{ flexDirection: 'row' }}>
               <LabelInput>Telefone</LabelInput>
             </View>
-            <TextInputMask
-              type={'cel-phone'}
-              options={{
-                maskType: 'BRL',
-                withDDD: true,
-                dddMask: '(41) '
-              }}
-              style={styles.textInputStype}
-              value={user.phone}
-              onChangeText={text => {
-                this.setState({
-                  data: {
-                    ...this.state.data,
-                    telefone: text
-                  }
-                })
-              }}
-            />
+            <FormInput
+              style={styles.input}
+              onChange={this.myChangeHandler}
+              autoCapitalize="none"
+              name={'phone'}
+              placeholder={user.phone} />
           </BoxInput>
           <BoxInput>
             <View style={{ flexDirection: 'row' }}>
@@ -124,7 +120,7 @@ export default class Student extends React.Component {
               autoCorrect={false}
               autoCapitalize="none"
               onChange={this.myChangeHandler}
-              name={'name'}
+              name={'password'}
             />
           </BoxInput>
           <BoxInput>
@@ -135,11 +131,12 @@ export default class Student extends React.Component {
               autoCorrect={false}
               autoCapitalize="none"
               onChange={this.myChangeHandler}
-              name={'name'}
+              name={'password_confirm'}
             />
           </BoxInput>
           <SubmitButton onPress={this.handleSubmit}>
-            <Text style={{ fontFamily: 'Montserrat' }}>Salvar</Text>
+            {this.state.button === false && <ActivityIndicator size="small" color="#fff" />}
+            {this.state.button && <Text style={{ fontFamily: 'Montserrat' }}>Salvar</Text>}
           </SubmitButton>
         </Form>
       </Container>

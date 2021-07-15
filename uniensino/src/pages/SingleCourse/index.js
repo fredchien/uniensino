@@ -30,7 +30,7 @@ export default class SingleCourse extends React.Component {
     routes: [
       { key: 'first', title: 'Aulas' },
       { key: 'second', title: 'Sobre' },
-      { key: 'third', title: 'Material Complementar' },
+      // { key: 'third', title: 'Material Complementar' },
     ],
   };
 
@@ -92,7 +92,7 @@ export default class SingleCourse extends React.Component {
                       <>
                         <TouchableOpacity
                           style={styles.item}
-                          onPress={() => this.props.navigation.navigate('SingleClass', { curso: lesson.name, courseId: lesson.module_id, classeId: lesson.subject_id, lessonId: lesson.id })}
+                          onPress={() => this.props.navigation.navigate('SingleClass', { curso: lesson.name, courseId: this.state.course.id, classeId: this.state.course.classe_id, lessonId: lesson.id })}
                         >
                           <Icon
                             name={lesson.has_video ? "video-camera" : "file-text-o"}
@@ -130,24 +130,24 @@ export default class SingleCourse extends React.Component {
     </ScrollView>
   );
 
-  ThirdRoute = () => (
-    <ScrollView style={{ backgroundColor: '#fff' }}>
-      <Container>
-        <TouchableOpacity style={{ width: '100%', marginTop: 15 }} onPress={() => this.props.navigation.navigate('SingleChat')}>
-          <Text style={{ fontSize: 16, color: '#353535' }}><Icon name="download" size={20} color="#666666" />   Download da Apostila</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={{ width: '100%', marginTop: 15 }} onPress={() => this.props.navigation.navigate('SingleChat')}>
-          <Text style={{ fontSize: 16, color: '#353535' }}><Icon name="download" size={20} color="#666666" />   Download dos Slides</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={{ width: '100%', marginTop: 15 }} onPress={() => this.props.navigation.navigate('SingleChat')}>
-          <Text style={{ fontSize: 16, color: '#353535' }}><Icon name="pencil" size={20} color="#666666" />   Responder Quiz</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={{ width: '100%', marginTop: 15 }} onPress={() => this.props.navigation.navigate('SingleChat')}>
-          <Text style={{ fontSize: 16, color: '#353535' }}><Icon name="comment-o" size={20} color="#666666" />  Fale com o Professor</Text>
-        </TouchableOpacity>
-      </Container>
-    </ScrollView>
-  );
+  // ThirdRoute = () => (
+  //   <ScrollView style={{ backgroundColor: '#fff' }}>
+  //     <Container>
+  //       <TouchableOpacity style={{ width: '100%', marginTop: 15 }} onPress={() => this.props.navigation.navigate('SingleChat')}>
+  //         <Text style={{ fontSize: 16, color: '#353535' }}><Icon name="download" size={20} color="#666666" />   Download da Apostila</Text>
+  //       </TouchableOpacity>
+  //       <TouchableOpacity style={{ width: '100%', marginTop: 15 }} onPress={() => this.props.navigation.navigate('SingleChat')}>
+  //         <Text style={{ fontSize: 16, color: '#353535' }}><Icon name="download" size={20} color="#666666" />   Download dos Slides</Text>
+  //       </TouchableOpacity>
+  //       <TouchableOpacity style={{ width: '100%', marginTop: 15 }} onPress={() => this.props.navigation.navigate('SingleChat')}>
+  //         <Text style={{ fontSize: 16, color: '#353535' }}><Icon name="pencil" size={20} color="#666666" />   Responder Quiz</Text>
+  //       </TouchableOpacity>
+  //       <TouchableOpacity style={{ width: '100%', marginTop: 15 }} onPress={() => this.props.navigation.navigate('SingleChat')}>
+  //         <Text style={{ fontSize: 16, color: '#353535' }}><Icon name="comment-o" size={20} color="#666666" />  Fale com o Professor</Text>
+  //       </TouchableOpacity>
+  //     </Container>
+  //   </ScrollView>
+  // );
 
   _handleIndexChange = (index) => this.setState({ index });
 

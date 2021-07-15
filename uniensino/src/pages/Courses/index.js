@@ -59,22 +59,23 @@ export default class Courses extends React.Component {
       <Container>
         {this.state.courses ? (
           <>
-            {this.state.courses.map((course, index) => (
-              // {{nota = str.split('.').shift()}}
-              <TouchableOpacity style={{ width: '100%' }} onPress={() => this.props.navigation.navigate('SingleCourse', { courseId: course.id, classeId: course.classe_id })} key={index}>
-                <BoxChat>
-                  <View style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-around', alignItems: 'center' }}>
-                    <Image source={{ uri: course.image }} style={{ width: 90, height: 90, borderRadius: 5 }}></Image>
-                    <Text style={{ width: 150, marginLeft: 15 }}>{course.name}</Text>
-                    <Msg><Icon name="chevron-right" size={20} color="#BABABA" /></Msg>
-                  </View>
-                  <View style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', alignContent: 'center' }}>
-                    <Progress.Bar progress={"0." + course.progress.split('.').shift()} width={250} color={'#96C8F8'} unfilledColor={'#EBECED'} borderColor={'white'} height={7} />
-                    <Text style={{ color: '#666666', fontSize: 11 }}>{course.progress.split('.').shift()}%</Text>
-                  </View>
-                </BoxChat>
-              </TouchableOpacity>
-            ))}
+            {this.state.courses
+              .filter((item) => item.concluded == false)
+              .map((course, index) => (
+                <TouchableOpacity style={{ width: '100%' }} onPress={() => this.props.navigation.navigate('SingleCourse', { courseId: course.id, classeId: course.classe_id })} key={index}>
+                  <BoxChat>
+                    <View style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-around', alignItems: 'center' }}>
+                      <Image source={{ uri: course.image }} style={{ width: 90, height: 90, borderRadius: 5 }}></Image>
+                      <Text style={{ width: 150, marginLeft: 15 }}>{course.name}</Text>
+                      <Msg><Icon name="chevron-right" size={20} color="#BABABA" /></Msg>
+                    </View>
+                    <View style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', alignContent: 'center' }}>
+                      <Progress.Bar progress={"0." + course.progress.split('.').shift()} width={250} color={'#96C8F8'} unfilledColor={'#EBECED'} borderColor={'white'} height={7} />
+                      <Text style={{ color: '#666666', fontSize: 11 }}>{course.progress.split('.').shift()}%</Text>
+                    </View>
+                  </BoxChat>
+                </TouchableOpacity>
+              ))}
           </>
         ) : (<></>)}
 
@@ -85,32 +86,29 @@ export default class Courses extends React.Component {
   SecondRoute = () => (
     <ScrollView style={{ backgroundColor: '#fff' }}>
       <Container>
-        <TouchableOpacity style={{ width: '100%' }} onPress={() => this.props.navigation.navigate('SingleCourse')}>
-          <BoxChat>
-            <View style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-around', alignItems: 'center' }}>
-              <Image source={bg} style={{ width: 90, borderRadius: 5 }}></Image>
-              <Text style={{ width: 150, marginLeft: 15 }}>Eco Escola “Capacitação Em Educação Ambiental”</Text>
-              <Msg><Icon name="chevron-right" size={20} color="#fff" /></Msg>
-            </View>
-            <View style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', alignContent: 'center' }}>
-              <Progress.Bar progress={0.0} width={250} color={'#96C8F8'} unfilledColor={'#EBECED'} borderColor={'white'} height={7} />
-              <Text style={{ color: '#666666', fontSize: 11 }}>0%</Text>
-            </View>
-          </BoxChat>
-        </TouchableOpacity>
-        <TouchableOpacity style={{ width: '100%' }} onPress={() => this.props.navigation.navigate('SingleCourse')}>
-          <BoxChat>
-            <View style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-around', alignItems: 'center' }}>
-              <Image source={bg} style={{ width: 90, borderRadius: 5 }}></Image>
-              <Text style={{ width: 150, marginLeft: 15 }}>Eco Escola “Capacitação Em Educação Ambiental”</Text>
-              <Msg><Icon name="chevron-right" size={20} color="#fff" /></Msg>
-            </View>
-            <View style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', alignContent: 'center' }}>
-              <Progress.Bar progress={0.0} width={250} color={'#96C8F8'} unfilledColor={'#EBECED'} borderColor={'white'} height={7} />
-              <Text style={{ color: '#666666', fontSize: 11 }}>0%</Text>
-            </View>
-          </BoxChat>
-        </TouchableOpacity>
+        {this.state.courses ? (
+          <>
+            {this.state.courses
+              .filter((item) => item.started == false)
+              .map((course, index) => (
+                <TouchableOpacity style={{ width: '100%' }} onPress={() => this.props.navigation.navigate('SingleCourse', { courseId: course.id, classeId: course.classe_id })} key={index}>
+                  <BoxChat>
+                    <View style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-around', alignItems: 'center' }}>
+                      <Image source={{ uri: course.image }} style={{ width: 90, height: 90, borderRadius: 5 }}></Image>
+                      <Text style={{ width: 150, marginLeft: 15 }}>{course.name}</Text>
+                      <Msg><Icon name="chevron-right" size={20} color="#BABABA" /></Msg>
+                    </View>
+                    <View style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', alignContent: 'center' }}>
+                      <Progress.Bar progress={"0." + course.progress.split('.').shift()} width={250} color={'#96C8F8'} unfilledColor={'#EBECED'} borderColor={'white'} height={7} />
+                      <Text style={{ color: '#666666', fontSize: 11 }}>{course.progress.split('.').shift()}%</Text>
+                    </View>
+                  </BoxChat>
+                </TouchableOpacity>
+              ))}
+          </>
+        ) : (<>
+
+        </>)}
       </Container>
     </ScrollView>
   );
@@ -118,32 +116,27 @@ export default class Courses extends React.Component {
   ThirdRoute = () => (
     <ScrollView style={{ backgroundColor: '#fff' }}>
       <Container>
-        <TouchableOpacity style={{ width: '100%' }} onPress={() => this.props.navigation.navigate('SingleCourse')}>
-          <BoxChat>
-            <View style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-around', alignItems: 'center' }}>
-              <Image source={bg} style={{ width: 90, borderRadius: 5 }}></Image>
-              <Text style={{ width: 150, marginLeft: 15 }}>Eco Escola “Capacitação Em Educação Ambiental”</Text>
-              <Msg><Icon name="chevron-right" size={20} color="#fff" /></Msg>
-            </View>
-            <View style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', alignContent: 'center' }}>
-              <Progress.Bar progress={1} width={250} color={'#96C8F8'} unfilledColor={'#EBECED'} borderColor={'white'} height={7} />
-              <Text style={{ color: '#666666', fontSize: 11 }}>100%</Text>
-            </View>
-          </BoxChat>
-        </TouchableOpacity>
-        <TouchableOpacity style={{ width: '100%' }} onPress={() => this.props.navigation.navigate('SingleCourse')}>
-          <BoxChat>
-            <View style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-around', alignItems: 'center' }}>
-              <Image source={bg} style={{ width: 90, borderRadius: 5 }}></Image>
-              <Text style={{ width: 150, marginLeft: 15 }}>Eco Escola “Capacitação Em Educação Ambiental”</Text>
-              <Msg><Icon name="chevron-right" size={20} color="#fff" /></Msg>
-            </View>
-            <View style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', alignContent: 'center' }}>
-              <Progress.Bar progress={1} width={250} color={'#96C8F8'} unfilledColor={'#EBECED'} borderColor={'white'} height={7} />
-              <Text style={{ color: '#666666', fontSize: 11 }}>100%</Text>
-            </View>
-          </BoxChat>
-        </TouchableOpacity>
+        {this.state.courses ? (
+          <>
+            {this.state.courses
+              .filter((item) => item.concluded == true)
+              .map((course, index) => (
+                <TouchableOpacity style={{ width: '100%' }} onPress={() => this.props.navigation.navigate('SingleCourse', { courseId: course.id, classeId: course.classe_id })} key={index}>
+                  <BoxChat>
+                    <View style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-around', alignItems: 'center' }}>
+                      <Image source={{ uri: course.image }} style={{ width: 90, height: 90, borderRadius: 5 }}></Image>
+                      <Text style={{ width: 150, marginLeft: 15 }}>{course.name}</Text>
+                      <Msg><Icon name="chevron-right" size={20} color="#BABABA" /></Msg>
+                    </View>
+                    <View style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', alignContent: 'center' }}>
+                      <Progress.Bar progress={"0." + course.progress.split('.').shift()} width={250} color={'#96C8F8'} unfilledColor={'#EBECED'} borderColor={'white'} height={7} />
+                      <Text style={{ color: '#666666', fontSize: 11 }}>{course.progress.split('.').shift()}%</Text>
+                    </View>
+                  </BoxChat>
+                </TouchableOpacity>
+              ))}
+          </>
+        ) : (<></>)}
       </Container>
     </ScrollView>
   );

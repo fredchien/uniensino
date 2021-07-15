@@ -17,6 +17,7 @@ import SingleChat from './pages/SingleChat';
 import Courses from './pages/Courses';
 import SingleCourse from './pages/SingleCourse';
 import SingleClass from './pages/SingleClass';
+import SingleTest from './pages/SingleTest';
 
 function LoginSchema({ navigation }) {
   return (
@@ -156,7 +157,24 @@ function courseSchema({ navigation }) {
             title:
               (route.params.curso),
             headerLeft: () => (
-              <Icon name="chevron-left" size={20} color="#fff" onPress={() => navigation.replace('SingleCourse')} style={{ marginLeft: 30 }} />
+              <Icon name="chevron-left" size={20} color="#fff" onPress={() => navigation.goBack()} style={{ marginLeft: 30 }} />
+            ),
+            headerStyle: {
+              backgroundColor: '#002951',
+            },
+            headerTintColor: '#fff',
+            headerTitleAlign: 'center'
+          })}
+      />
+      <Stack.Screen
+        name="SingleTest"
+        component={SingleTest}
+        options={({ route }) => (
+          {
+            title:
+              (route.params.curso),
+            headerLeft: () => (
+              <Icon name="chevron-left" size={20} color="#fff" onPress={() => navigation.goBack()} style={{ marginLeft: 30 }} />
             ),
             headerStyle: {
               backgroundColor: '#002951',
@@ -239,6 +257,7 @@ export default function App() {
         <Tab.Screen name={"Courses"} component={courseSchema} options={{ tabBarVisible: false }} />
         <Tab.Screen name={"SingleCourse"} component={courseSchema} options={{ tabBarVisible: false }} />
         <Tab.Screen name={"SingleClass"} component={courseSchema} options={{ tabBarVisible: false }} />
+        <Tab.Screen name={"SingleTest"} component={courseSchema} options={{ tabBarVisible: false }} />
         {/* <Tab.Screen name={"Partners"} component={partnerSchema} options={{tabBarVisible: false}}/>
         <Tab.Screen name={"PartnersSingle"} component={partnerSchema} options={{tabBarVisible: false}}/>
         <Tab.Screen name={"Professionals"} component={professionalsSchema} options={{tabBarVisible: false}}/>

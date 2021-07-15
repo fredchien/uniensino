@@ -1,7 +1,9 @@
 import React, { Component } from 'react';
 import LinearGradient from 'react-native-linear-gradient';
-import { ScrollView, Text, TouchableOpacity, Modal, StyleSheet, View } from 'react-native';
-import Video from 'react-native-video';
+import { ScrollView, Text, TouchableOpacity, Modal, StyleSheet, View, Linking } from 'react-native';
+import { RadioButton } from 'react-native-paper';
+import { WebView } from 'react-native-webview';
+import Icon from 'react-native-vector-icons/FontAwesome';
 import HTML from "react-native-render-html";
 import AsyncStorage from '@react-native-community/async-storage';
 import api from '../../services/api';
@@ -14,7 +16,15 @@ export default class SingleClass extends React.Component {
   state = {
     loading: true,
     modalVisibleSuccess: false,
+    modalVisibleLinks: false,
+    modalVisibleTest: false,
     lesson: [],
+    links: [],
+    test: [],
+    testCheck: [],
+    next: [],
+    exercises: [],
+    exer: [],
   };
 
   getLoad = async () => {
@@ -22,6 +32,9 @@ export default class SingleClass extends React.Component {
       if (token !== null) {
         this.setState({ token: token });
         this.getCourse(token);
+        this.getTestCheck(token);
+        //this.getTest(token);
+        this.getNext(token);
       }
     });
   }
@@ -32,7 +45,36 @@ export default class SingleClass extends React.Component {
       { headers: { Authorization: 'Bearer ' + token } },
     );
 
-    this.setState({ lesson: response.data.data.lesson, loading: false });
+    this.setState({ lesson: response.data.data.lesson, links: response.data.data.lesson.links, loading: false });
+    console.log(response.data.data.lesson);
+    console.log('entrou');
+  }
+
+  getTestCheck = async (token = this.state.token) => {
+    const response = await api.get(`/courses/${this.props.route.params.courseId}/classes/${this.props.route.params.classeId}/lessons/${this.props.route.params.lessonId}/test/check`,
+      { headers: { Authorization: 'Bearer ' + token } },
+    );
+
+    this.setState({ testCheck: response.data.data.test });
+
+  }
+
+  getTest = async (token = this.state.token) => {
+    const response = await api.get(`/courses/${this.props.route.params.courseId}/classes/${this.props.route.params.classeId}/lessons/${this.props.route.params.lessonId}/test`,
+      { headers: { Authorization: 'Bearer ' + token } },
+    );
+
+    this.setState({ test: response.data.data.test, exer: response.data.data.test.exercises });
+    console.log(response.data.data.test.exercises);
+
+  }
+  getNext = async (token = this.state.token) => {
+    const response = await api.get(`/courses/${this.props.route.params.courseId}/classes/${this.props.route.params.classeId}/lessons/${this.props.route.params.lessonId}/next`,
+      { headers: { Authorization: 'Bearer ' + token } },
+    );
+
+    this.setState({ next: response.data.data.lesson });
+    console.log(response.data.data.lesson);
 
   }
 
@@ -41,40 +83,93 @@ export default class SingleClass extends React.Component {
     this.setState({ loading: false });
   }
 
+  save = async event => {
+    this.setState({ loading: true });
+
+    console.log(this.state.exercises);
+
+    this.setState({ loading: false });
+  }
+
+  checkAns(exercise, question) {
+    this.setState({
+      exercises: [
+        ...this.state.exercises,
+        {
+          id: exercise.id,
+          answer: {
+            answer_id: question.id, answer_text: null
+          }
+        }]
+    });
+    console.log(this.state.exercises);
+  }
+
   render() {
-    const { loading, modalVisibleSuccess, lesson } = this.state;
+    const { loading, modalVisibleSuccess, lesson, links, modalVisibleLinks, modalVisibleTest, test, exer, next, testCheck } = this.state;
     return (
       <>
 
         <ScrollView style={{ backgroundColor: '#fff' }}>
-          {/* <Spinner
+          <Spinner
             visible={loading}
             textContent={'Carregando...'}
             textStyle={{ color: '#fff' }}
             overlayColor={'#002951'}
-          /> */}
+          />
           <Container>
-            <Video source={{ uri: "https://player.vimeo.com/video/361563749" }}   // Can be a URL or a local file.
-              ref={(ref) => {
-                this.player = ref
-              }}                                      // Store reference
-              onBuffer={this.onBuffer}                // Callback when remote video is buffering
-              onError={this.videoError}               // Callback when video cannot be loaded
-              style={styles.backgroundVideo} />
-            <HTML source={{ html: '<iframe _ngcontent-serverapp-c59="" frameborder="0" allow="accelerometer; autoplay; fullscreen; encrypted-media; gyroscope; picture-in-picture" allowfullscreen="" class="embed-responsive-item" src="//player.vimeo.com/video/361563749"></iframe>' }} />
-            <BoxHeader>
-              <Text style={{ color: '#333333', fontSize: 18, marginBottom: 10, fontFamily: 'Montserrat', fontWeight: 'bold' }}>{lesson.video}</Text>
-            </BoxHeader>
+            <WebView
+              source={{ uri: lesson.video }}
+              style={{ marginTop: 20, width: 300, height: 300 }}
+            />
 
-            <Text style={{ color: '#666', fontSize: 14, fontFamily: 'Montserrat', lineHeight: 25 }}>Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt.</Text>
+            <HTML source={{ html: lesson.description }} />
 
             <BoxHeader>
-              <Text style={{ color: '#333333', fontSize: 18, marginBottom: 10, fontFamily: 'Montserrat', fontWeight: 'bold' }}>Ecologia</Text>
+              <Text style={{ color: '#333333', fontSize: 18, marginBottom: 10, fontFamily: 'Montserrat', fontWeight: 'bold' }}>Materiais de Apoio</Text>
             </BoxHeader>
 
-            <Text style={{ color: '#666', fontSize: 14, fontFamily: 'Montserrat', lineHeight: 25 }}>Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt.</Text>
+            {lesson.laboratory !== null ? (
+              <SubmitButton style={{ backgroundColor: '#002951' }} onPress={() => Linking.openURL(lesson.laboratory)}>
+                <Text style={{ fontFamily: 'Montserrat' }}><Icon name="flask" size={20} color="#fff" style={{ marginLeft: 30 }} /> Laboratório</Text>
+              </SubmitButton>
+            ) : (
+              <SubmitButton style={{ backgroundColor: '#8e959c' }}>
+                <Text style={{ fontFamily: 'Montserrat' }}><Icon name="flask" size={20} color="#fff" style={{ marginLeft: 30 }} /> Laboratório</Text>
+              </SubmitButton>
+            )}
 
-            <SubmitButton onPress={() => this.setState({ modalVisibleSuccess: true })}>
+            {links.length !== 0 ? (
+              <SubmitButton style={{ backgroundColor: '#002951' }} onPress={() => this.setState({ modalVisibleLinks: true })}>
+                <Text style={{ fontFamily: 'Montserrat' }}><Icon name="paperclip" size={20} color="#fff" style={{ marginLeft: 30 }} /> Materiais de Apoio</Text>
+              </SubmitButton>
+            ) : (
+              <SubmitButton style={{ backgroundColor: '#8e959c' }} onPress={() => this.setState({ modalVisibleLinks: true })}>
+                <Text style={{ fontFamily: 'Montserrat' }}><Icon name="paperclip" size={20} color="#fff" style={{ marginLeft: 30 }} /> Materiais de Apoio</Text>
+              </SubmitButton>
+            )}
+
+            <BoxHeader>
+              <Text style={{ color: '#333333', fontSize: 18, marginBottom: 10, fontFamily: 'Montserrat', fontWeight: 'bold' }}>Avaliação</Text>
+            </BoxHeader>
+
+            {lesson.has_test ? (
+              testCheck.is_answered === false ? (
+                <SubmitButton style={{ backgroundColor: '#002951' }} onPress={() => this.props.navigation.navigate('SingleTest', { curso: 'Avaliação: ' + lesson.name, courseId: this.props.route.params.courseId, classeId: this.props.route.params.classeId, lessonId: this.props.route.params.lessonId, testId: test.id })}>
+                  <Text style={{ fontFamily: 'Montserrat' }}><Icon name="sticky-note" size={20} color="#fff" style={{ marginLeft: 30 }} /> Realizar avaliação</Text>
+                </SubmitButton>
+              ) : (
+                <SubmitButton style={{ backgroundColor: '#8e959c' }}>
+                  <Text style={{ fontFamily: 'Montserrat' }}><Icon name="sticky-note" size={20} color="#fff" style={{ marginLeft: 30 }} /> A avaliação já foi respondida!</Text>
+                </SubmitButton>
+              )
+            ) : (
+              <SubmitButton style={{ backgroundColor: '#8e959c' }}>
+                <Text style={{ fontFamily: 'Montserrat' }}><Icon name="sticky-note" size={20} color="#fff" style={{ marginLeft: 30 }} /> Nenhuma avaliação</Text>
+              </SubmitButton>
+            )}
+
+            <SubmitButton onPress={() => this.props.navigation.replace('SingleClass', { curso: next.subject, courseId: next.module_id, classeId: this.props.route.params.classeId, lessonId: next.id })}>
               <Text style={{ fontFamily: 'Montserrat' }}>Próxima aula</Text>
             </SubmitButton>
 
@@ -85,13 +180,12 @@ export default class SingleClass extends React.Component {
             <Modal
               animationType="fade"
               transparent={true}
-              visible={modalVisibleSuccess}>
+              visible={modalVisibleLinks}>
               <LinearGradient colors={['#B20A00', '#002951']} style={styles.centeredView}>
                 <TouchableOpacity
                   style={styles.openButton}
                   onPress={() => {
-                    this.setState({ modalVisibleSuccess: false });
-                    this.props.navigation.replace('Dashboard');
+                    this.setState({ modalVisibleLinks: false });
                   }}>
                   <Text style={[styles.textStyle]}>X</Text>
                 </TouchableOpacity>
@@ -105,33 +199,22 @@ export default class SingleClass extends React.Component {
                     },
                   ]}>
 
-
-                  <Text
-                    style={{
-                      color: '#002951',
-                      marginTop: 15,
-                      marginBottom: 20,
-                      textAlign: 'center',
-                      fontSize: 24,
-                      fontWeight: 'bold',
-                      fontFamily: 'Montserrat',
-                    }}>
-                    Parabéns!{"\n"}
-                    Módulo Finalizado
-                  </Text>
-                  <Text
-                    style={{
-                      color: '#161615',
-                      textAlign: 'center',
-                      fontSize: 14,
-                      fontFamily: 'Montserrat',
-                      marginBottom: 10
-                    }}>
-                    Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore.
-                  </Text>
-                  <SubmitButton onPress={() => this.setState({ modalVisibleSuccess: true })}>
-                    <Text style={{ fontFamily: 'Montserrat' }}>Próximo módulo</Text>
-                  </SubmitButton>
+                  <View>
+                    {
+                      links.map((link, i) => (
+                        <>
+                          <Text onPress={() => Linking.openURL(link.url)}>{link.name}</Text>
+                        </>
+                      ))
+                    }
+                    {
+                      links.length === 0 ?
+                        (
+                          <Text>Este conteúdo não está disponível nesta aula.</Text>
+                        ) :
+                        (<></>)
+                    }
+                  </View>
                 </View>
 
               </LinearGradient>
@@ -186,12 +269,10 @@ const styles = StyleSheet.create({
     elevation: 5,
   },
   backgroundVideo: {
-    position: 'relative',
+    position: 'absolute',
     top: 0,
     left: 0,
     bottom: 0,
     right: 0,
-    width: '100%',
-    height: 300
   },
 });
