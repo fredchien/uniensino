@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import LinearGradient from 'react-native-linear-gradient';
-import { ScrollView, Text, TouchableOpacity, Modal, StyleSheet, View, Linking } from 'react-native';
+import { ScrollView, Text, TouchableOpacity, Modal, StyleSheet, View, Linking, Dimensions } from 'react-native';
 import { RadioButton } from 'react-native-paper';
 import { WebView } from 'react-native-webview';
 import Icon from 'react-native-vector-icons/FontAwesome';
@@ -18,6 +18,7 @@ export default class SingleClass extends React.Component {
     modalVisibleSuccess: false,
     modalVisibleLinks: false,
     modalVisibleTest: false,
+    width: Dimensions.get('window').width,
     lesson: [],
     links: [],
     test: [],
@@ -120,7 +121,7 @@ export default class SingleClass extends React.Component {
           <Container>
             <WebView
               source={{ uri: lesson.video }}
-              style={{ marginTop: 20, width: 300, height: 300 }}
+              style={{ marginTop: 0, width: this.state.width, height: 300 }}
             />
 
             <HTML source={{ html: lesson.description }} />

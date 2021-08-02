@@ -40,7 +40,9 @@ export const Msg = styled.Text`
   font-weight: bold;
 `;
 export const SubmitButton = styled(Button)`
-  margin-top: 5px;
+  margin-top: 10px;
   font-family: 'Montserrat';
   width: 50%;
+  borderRadius: 25;
 `;
+  

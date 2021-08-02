@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { ScrollView, Text, Image, TouchableOpacity, View, StyleSheet, Animated, Dimensions } from 'react-native';
-import { TabView, SceneMap } from 'react-native-tab-view';
+import { TabView, SceneMap, TabBar } from 'react-native-tab-view';
 import AsyncStorage from '@react-native-community/async-storage';
 import api from '../../services/api';
 import Icon from 'react-native-vector-icons/FontAwesome';
@@ -179,9 +179,16 @@ export default class Courses extends React.Component {
         <TabView
           navigationState={this.state}
           renderScene={this._renderScene}
-          renderHeader={this._renderHeader}
           onIndexChange={this._handleIndexChange}
           initialLayout={initialLayout}
+          renderTabBar={props => <TabBar
+            {...props}
+            indicatorStyle={{ backgroundColor: '#B20A00', fontWeight: 'bold' }}
+            style={{ backgroundColor: '#002951'}}
+            labelStyle={{ fontSize: 15, textTransform:'capitalize' }}
+            activeColor={ '#fff' }
+            inactiveColor={ '#fff' }
+          />}
         />
       </>
     );
@@ -212,7 +219,6 @@ const styles = StyleSheet.create({
   },
   tablabel: {
     backgroundColor: 'transparent',
-    color: 'black',
     fontSize: 10,
     margin: 4,
 

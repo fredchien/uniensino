@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { ScrollView, Text, Image, TouchableOpacity, View, StyleSheet, Dimensions, ImageBackground } from 'react-native';
-import { TabView, SceneMap } from 'react-native-tab-view';
+import { TabView, SceneMap, TabBar } from 'react-native-tab-view';
 import HTML from "react-native-render-html";
 import AsyncStorage from '@react-native-community/async-storage';
 import api from '../../services/api';
@@ -157,15 +157,7 @@ export default class SingleCourse extends React.Component {
     third: this.ThirdRoute,
   });
 
-  _renderHeader(props) {
-    return (
-      <TabBar
-        {...props}
-        indicatorStyle={{ backgroundColor: 'white' }}
-        style={{ backgroundColor: 'pink', fontSize: 10 }}
-      />
-    )
-  }
+ 
 
 
   componentDidMount() {
@@ -189,7 +181,7 @@ export default class SingleCourse extends React.Component {
             <Text style={{ color: 'white', textAlign: 'center', fontSize: 16, marginBottom: 10 }}>{current.name}</Text>
             <Text style={{ color: 'white', textAlign: 'center', fontSize: 20, marginBottom: 10, fontWeight: 'bold' }}>{current.subject}</Text>
             <SubmitButton onPress={() => this.props.navigation.navigate('SingleClass', { curso: current.name, courseId: course.id, classeId: course.classe_id, lessonId: current.id })}>
-              <Text style={{ fontFamily: 'Montserrat' }}>Começar agora</Text>
+              <Text style={{ fontFamily: 'Montserrat', fontSize: 18 }}>Começar agora</Text>
             </SubmitButton>
           </View>
         </ImageBackground>
@@ -199,7 +191,14 @@ export default class SingleCourse extends React.Component {
         <TabView
           navigationState={this.state}
           renderScene={this._renderScene}
-          renderHeader={this._renderHeader}
+          renderTabBar={props => <TabBar
+            {...props}
+            indicatorStyle={{ backgroundColor: '#ACACAC', fontWeight: 'bold' }}
+            style={{ backgroundColor: '#fff'}}
+            activeColor={{ color: '#000' }}
+            labelStyle={{ fontSize: 18, textTransform:'capitalize' }}
+            inactiveColor={{ color: '#353535' }}
+          />}
           onIndexChange={this._handleIndexChange}
           initialLayout={initialLayout}
         />
